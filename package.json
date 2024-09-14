@@ -1,0 +1,52 @@
+{
+  "name": "vue-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit -p --composite false",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write src/",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest watch",
+    "test:unit:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@types/node": "^22.4.1",
+    "@vee-validate/rules": "^4.13.2",
+    "axios": "^1.7.5",
+    "pinia": "^2.2.2",
+    "swiper": "^11.1.10",
+    "vee-validate": "^4.13.2",
+    "vue": "^3.4.37",
+    "vue-i18n": "^9.14.0",
+    "vue-router": "^4.4.3",
+    "vue3-cookies": "^1.0.6",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^4.0.0",
+    "@rushstack/eslint-patch": "^1.10.4",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/vue": "^8.1.0",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.9.0",
+    "eslint-plugin-cypress": "^3.5.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "jsdom": "^24.1.1",
+    "postcss": "^8.4.41",
+    "prettier": "^3.3.3",
+    "sass": "^1.77.8",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1",
+    "vitest": "^2.0.5",
+    "vue-tsc": "^2.0.29"
+  }
+}
