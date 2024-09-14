@@ -1,73 +1,99 @@
 <template>
   <div class="flex">
-    <div class="w-[30%] bg-sky-200 h-[720px] max-[470px]:h-[600px]">
-      <div class="text-center text-[20px] my-[10px] max-[470px]:text-[16px]">
-        Chats
-      </div>
-      <div
-        class="w-full h-[60px] max-[470px]:h-[40px] py-[5px] px-[20px] max-[470px]:px-[15px] flex gap-[10px] bg-sky-600 items-center"
-      >
-        <div
-          class="w-[50px] h-[50px] max-[470px]:w-[30px] max-[470px]:h-[30px] bg-lime-400 rounded-[50%]"
-        >
-          <h4
-            class="text-white text-[30px] max-[470px]:text-[20px] leading-[16px] text-center my-[18px] max-[470px]:my-[9px]"
-          >
-            U
-          </h4>
-        </div>
-        <h1 class="text-[16px] max-[470px]:text-[12px] leading-[12px]">
-          User1
-        </h1>
-      </div>
-    </div>
-    <div class="w-full h-[720px] max-[470px]:h-[600px] bg-sky-100 relative">
-      <div
-        class="w-full h-[60px] max-[470px]:h-[40px] py-[5px] px-[20px] max-[470px]:px-[15px] flex gap-[10px] bg-blue-400 items-center"
-      >
-        <div
-          class="w-[50px] h-[50px] max-[470px]:w-[30px] max-[470px]:h-[30px] bg-lime-400 rounded-[50%]"
-        >
-          <h4
-            class="text-white text-[30px] max-[470px]:text-[20px] leading-[16px] text-center my-[18px] max-[470px]:my-[9px]"
-          >
-            U
-          </h4>
-        </div>
-        <h1 class="text-[16px] leading-[12px] max-[470px]:text-[12px]">
-          User1
-        </h1>
-      </div>
-      <div
-        class="px-[25px] py-[15px] flex flex-col gap-[8px] max-[470px]:px-[15px]"
-      >
-        <div class="flex">
-          <Messages />
-        </div>
-        <div class="flex justify-end">
-          <Messages />
-        </div>
-        <div class="flex">
-          <Messages />
-        </div>
-      </div>
-      <div
-        class="px-[20px] max-[470px]:px-[10px] flex gap-[10px] absolute bottom-[10px] w-full justify-between items-center"
-      >
-        <textarea
-          type="text"
-          class="w-full max-w-[1000px] max-[720px]:max-w-[600px] h-[40px] max-[720px]:h-[30px] rounded-[16px] max-[720px]:rounded-[10px] bottom-[10px] text-[18px] max-[720px]:text-[14px] max-[470px]:text-[12px] leading-[20px] max-[720px]:leading-[14px] px-[15px] max-[470px]:py-[10px] py-[13px] resize-none outline-none"
-          placeholder="Type your massages..."
-        ></textarea>
-        <img
-          src="/public/send.png"
-          alt=""
-          class="w-[30px] h-[30px] cursor-pointer max-[470px]:w-[18px] max-[470px]:h-[18px]"
-        />
-      </div>
-    </div>
+    <LeftSideBar
+      v-model="selectedChat"
+      :chats="chats"
+      @onSelectedChat="handleSelectedChat"
+    />
+    <Chat
+      :chat="selectedChat"
+      :messages="messages"
+      @onSendMessage="handleSendMessage"
+    />
   </div>
 </template>
 <script lang="ts" setup>
-import Messages from "@/components/messages.vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
+
+import type { IChatList } from "@/types/chatList";
+import type { IMessage, ISendMessage } from "@/types/message";
+
+import LeftSideBar from "@/components/leftSidebar.vue";
+import Chat from "@/components/chat.vue";
+
+const ACTIONS = {
+  get_private_chat_list: "get_private_chat_list",
+  get_private_chat_message: "get_private_chat _message",
+  ping: "ping",
+  send_message_to_chat: "send_message_to_chat",
+};
+
+const route = useRoute();
+
+const socket = ref<WebSocket | null>(null);
+
+const selectedChat = ref<IChatList>();
+const chats = ref<IChatList[]>([]);
+const messages = ref<IMessage[]>([]);
+
+onMounted(async () => {
+  socket.value = new WebSocket(
+    `${import.meta.env.VITE_WEB_SOCKET_URL}?token=${route.query.token}`
+  );
+  socket.value.onmessage = (event: MessageEvent) => {
+    const data = JSON.parse(event.data);
+    switch (data.action) {
+      case ACTIONS.get_private_chat_list:
+        chats.value = data.results;
+        break;
+      case ACTIONS.get_private_chat_message:
+        messages.value = data.results;
+        break;
+      case ACTIONS.send_message_to_chat:
+        messages.value.push(data.data);
+        console.log(ACTIONS.send_message_to_chat, data, messages.value);
+        break;
+      default:
+        break;
+    }
+  };
+  socket.value.onopen = () => {
+    if (socket.value && socket.value.readyState === WebSocket.OPEN) {
+      socket.value.send(
+        JSON.stringify({ action: ACTIONS.get_private_chat_list })
+      );
+    }
+  };
+});
+
+onUnmounted(() => {
+  if (socket.value) {
+    socket.value.close();
+  }
+});
+
+function handleSelectedChat() {
+  sendMessage({
+    action: "get_private_chat_message",
+  });
+}
+
+function handleSendMessage(msg: string) {
+  if (selectedChat.value)
+    sendMessage({
+      action: "send_message_to_chat",
+      payload: {
+        chat_room_id: selectedChat.value?.id,
+        message: msg,
+        reply_message: null,
+      },
+    });
+}
+
+function sendMessage(msg: ISendMessage) {
+  if (socket.value && socket.value.readyState === WebSocket.OPEN) {
+    socket.value.send(JSON.stringify(msg));
+  }
+}
 </script>
