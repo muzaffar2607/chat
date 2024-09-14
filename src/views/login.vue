@@ -1,12 +1,15 @@
 <template>
-  <div class="flex gap-10">
-    <button
-      v-for="(user, index) in users"
-      :key="index"
-      @click="toChat(user.token)"
-    >
-      {{ user.full_name }}
-    </button>
+  <div class="flex justify-center mt-[200px]">
+    <div class="flex gap-10">
+      <button
+        v-for="(user, index) in users"
+        :key="index"
+        @click="toChat(user.token)"
+        class="w-[100px] h-[50px] bg-blue-200 rounded-[12px]"
+      >
+        {{ user.full_name }}
+      </button>
+    </div>
   </div>
 </template>
 <script setup lang="ts">

@@ -5,7 +5,7 @@
     <textarea
       v-model="message"
       type="text"
-      class="w-full max-w-[1000px] max-[720px]:max-w-[600px] h-[40px] max-[720px]:h-[30px] rounded-[16px] max-[720px]:rounded-[10px] bottom-[10px] text-[18px] max-[720px]:text-[14px] max-[470px]:text-[12px] max-[375px]:text-[8px] leading-[20px] max-[720px]:leading-[14px] px-[15px] max-[370px]:px-[6px] max-[470px]:py-[10px] py-[12px] resize-none outline-none"
+      class="w-full max-w-[1000px] max-[720px]:max-w-[600px] h-[50px] max-[720px]:h-[35px] rounded-[16px] max-[720px]:rounded-[10px] bottom-[10px] text-[18px] max-[720px]:text-[14px] max-[470px]:text-[12px] max-[375px]:text-[8px] leading-[20px] max-[720px]:leading-[14px] px-[15px] max-[370px]:px-[6px] max-[470px]:py-[10px] py-[12px] resize-none outline-none"
       placeholder="Type your massages..."
       @keyup.enter="sendMessage"
     ></textarea>

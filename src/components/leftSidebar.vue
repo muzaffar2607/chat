@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[30%] bg-sky-200 h-[calc(100vh-48px)]">
+  <div class="w-[25%] bg-sky-200 h-[calc(100vh-48px)]">
     <div
       class="text-center text-[20px] max-[470px]:h-[40px] h-[60px] max-[470px]:py-[5px] py-[15px] max-[470px]:text-[16px]"
     >
