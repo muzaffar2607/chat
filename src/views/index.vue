@@ -39,7 +39,7 @@ const messages = ref<IMessage[]>([]);
 
 onMounted(async () => {
   socket.value = new WebSocket(
-    `${import.meta.env.VITE_WEB_SOCKET_URL}?token=${route.query.token}`
+    `${import.meta.env.VITE_WEB_SOCKET_URL}?token=${route.query.token}`,
   );
   socket.value.onmessage = (event: MessageEvent) => {
     const data = JSON.parse(event.data);
@@ -61,7 +61,7 @@ onMounted(async () => {
   socket.value.onopen = () => {
     if (socket.value && socket.value.readyState === WebSocket.OPEN) {
       socket.value.send(
-        JSON.stringify({ action: ACTIONS.get_private_chat_list })
+        JSON.stringify({ action: ACTIONS.get_private_chat_list }),
       );
     }
   };
