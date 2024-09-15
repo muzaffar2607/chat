@@ -53,3 +53,6 @@ yarn.lock
 *.swm
 *.out
 *.p
+
+tsconfig.app.tsbuildinfo
+tsconfig.vitest.tsbuildinfo

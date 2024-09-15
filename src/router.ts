@@ -27,7 +27,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const token = to.query.token; // Or you can retrieve token from localStorage/sessionStorage
   if (to.meta.middleware === "auth" && !token) {
     // If user is not authenticated and trying to access an auth-protected route
